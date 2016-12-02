@@ -22,6 +22,7 @@ Route::group(['middleware' => ['auth']], function()
 	Route::get('seasons', 'HomeController@seasons');
 	Route::get('seasons/{id}', 'HomeController@showseason');
 	Route::get('seasons/game/{id}', 'HomeController@game');
+	Route::get('showgames', 'HomeController@showgames');
 });
 
 Route::auth();

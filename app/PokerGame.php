@@ -15,4 +15,9 @@ class PokerGame extends Model
     {
     	return $this->belongsTo('App\PokerGameType');
     }
+
+    public function host()
+    {
+    	return User::findorfail($this->host_id);
+    }
 }

@@ -51,6 +51,8 @@
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url('/') }}">Home</a></li>
                     <li><a href="{{ url('/seasons') }}">Seasons</a></li>
+                    <li><a href="{{ url('/showgames') }}">Recent Games</a></li>
+                    <li><a href="{{ url('/addgame') }}">Add Game</a></li>
                 </ul>
 
                 <!-- Right Side Of Navbar -->

@@ -4,6 +4,28 @@
 <div class="container">
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
+            <div class="panel panel-default">
+                <div class="panel-heading">Upcoming Games</div>
+                <div class="panel-body">                  
+                    @foreach($upcomingGames as $upcomingGame)
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    Location: {{$upcomingGame->location}}
+                                </div>
+                                <div class="col-sm-2">
+                                    Date: {{$upcomingGame->date}}
+                                </div>  
+                                @if($upcomingGame->host_id > 0)                              
+                                    <div class="col-sm-2">
+                                        Host: {{$upcomingGame->host()->name}}
+                                    </div>                                  
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
             @foreach ($blogs as $blog)
                 <div class="panel panel-default">
                     <div class="panel-heading">{{ $blog->title }} {{$blog->user->name}}</div>
@@ -14,7 +36,7 @@
                 </div>
             @endforeach
             <div class="panel panel-default">
-                <div class="panel-heading">Add a Blog Post</div>
+                <div class="panel-heading">Add a Message</div>
 
                 <div class="panel-body">
                     <form class="form" action="" method="POST">

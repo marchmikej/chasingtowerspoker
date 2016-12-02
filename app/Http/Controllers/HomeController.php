@@ -21,6 +21,7 @@ class HomeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        date_default_timezone_set('America/New_York');
     }
 
     /**
@@ -31,7 +32,8 @@ class HomeController extends Controller
     public function index()
     {
         $blogs = Blog::orderBy('updated_at', 'desc')->get();
-        return view('welcome', compact('blogs'));
+        $upcomingGames = PokerGame::where('date','>',date("Y-m-d"))->get();
+        return view('welcome', compact('blogs', 'upcomingGames'));
     }
 
     public function submitBlog(Request $request)
@@ -163,5 +165,11 @@ class HomeController extends Controller
         $pokerGameFinish->user_id = $request->input('user_id');
         $pokerGameFinish->save();        
         return redirect('updategamestanding/'.$pokerGameFinish->poker_game_id); 
+    }
+
+    public function showgames()
+    {   
+        $games = PokerGame::orderBy('date', 'desc')->get();
+        return view('showgames', compact('games'));   
     }
 }
