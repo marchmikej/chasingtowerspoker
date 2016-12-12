@@ -3,6 +3,54 @@
 @section('content')
 <div class="container">
     <div class="row">
+        <div class="col-md-offset-1">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-6  col-md-5">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Wins</div>
+                            <div class="panel-body">
+                                {{$dashboard['wins']}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6  col-md-5">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Total Winnings</div>
+
+                            <div class="panel-body">
+                                ${{$dashboard['totalWinnings']}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">            
+                    <div class="col-xs-6 col-md-5">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Avg Finish</div>
+
+                            <div class="panel-body">
+                                {{number_format($dashboard['averagePlace'], 2, '.', ',')}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-md-5">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Avg Finish 6 Months</div>
+
+                            <div class="panel-body">
+                                {{number_format($dashboard['averagePlaceLast6Months'], 2, '.', ',')}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
         <div class="col-md-10 col-md-offset-1">
             <div class="panel panel-default">
                 <div class="panel-heading">Upcoming Games</div>
@@ -28,7 +76,7 @@
             </div>
             @foreach ($blogs as $blog)
                 <div class="panel panel-default">
-                    <div class="panel-heading">{{ $blog->title }} {{$blog->user->name}}</div>
+                    <div class="panel-heading">{{ $blog->title }} by {{$blog->user->name}}</div>
 
                     <div class="panel-body">
                             <p>{{ $blog->body }}</p>              

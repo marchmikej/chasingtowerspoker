@@ -16,6 +16,11 @@ class PokerGameFinish extends Model
     	return $this->belongsTo('App\PokerGame');	
     }
 
+    public function knockedOutBy() 
+    {
+        return User::findorfail($this->knocked_out_by_id);
+    }
+
     public function knockouts()
     {
     	return PokerGameFinish::where('knocked_out_by_id',$this->user_id)->where('poker_game_id',$this->poker_game_id)->count();
@@ -41,7 +46,7 @@ class PokerGameFinish extends Model
     	if($this->pokerGame->pokerGameType->id == 1 && $this->place > 0)
     	{
     		$knockouts = PokerGameFinish::where('knocked_out_by_id',$this->user_id)->where('poker_game_id',$this->poker_game_id)->count();
-    		$money = $knockouts * 5;
+    		$money = $knockouts * $this->pokerGame->knockout_payment;
     		if($this->place==1)
     		{
     			$money = $this->pokerGame->payout1 + $money;
@@ -65,7 +70,7 @@ class PokerGameFinish extends Model
     	} else if($this->pokerGame->pokerGameType->id == 2 && $this->place > 0)
     	{
     		$knockouts = PokerGameFinish::where('knocked_out_by_id',$this->user_id)->where('poker_game_id',$this->poker_game_id)->count();
-    		$money = $knockouts * 10;
+    		$money = $knockouts * $this->pokerGame->knockout_payment;
             if($this->place==1)
             {
                 $money = $this->pokerGame->payout1 + $money;
@@ -88,7 +93,28 @@ class PokerGameFinish extends Model
             return $money;
     	} else
     	{
-    		return 0;
+            $knockouts = PokerGameFinish::where('knocked_out_by_id',$this->user_id)->where('poker_game_id',$this->poker_game_id)->count();
+            $money = $knockouts * $this->pokerGame->knockout_payment;
+            if($this->place==1)
+            {
+                $money = $this->pokerGame->payout1 + $money;
+            } else if($this->place==2)
+            {
+                $money = $this->pokerGame->payout2 + $money;
+            } else if($this->place==3)
+            {
+                $money = $this->pokerGame->payout3 + $money;
+            } else if($this->place==4)
+            {
+                $money = $this->pokerGame->payout4 + $money;
+            } else if($this->place==5)
+            {
+                $money = $this->pokerGame->payout5 + $money;
+            } else if($this->place==6)
+            {
+                $money = $this->pokerGame->payout6 + $money;
+            } 
+            return $money;
     	}
     }
 }

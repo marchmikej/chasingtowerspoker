@@ -18,44 +18,82 @@
     <style>
         body {
             font-family: 'Lato';
+            background-color: #f0f0f0;
         }
 
         .fa-btn {
             margin-right: 6px;
         }
+
+#custom-bootstrap-menu.navbar-default .navbar-brand {
+    color: rgba(191, 207, 20, 1);
+}
+#custom-bootstrap-menu.navbar-default {
+    font-size: 14px;
+    background-color: rgba(46, 46, 46, 1);
+    border-width: 1px;
+    border-radius: 4px;
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a {
+    color: rgba(191, 207, 20, 1);
+    background-color: rgba(248, 248, 248, 0);
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a:hover,
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a:focus {
+    color: rgba(13, 28, 247, 1);
+    background-color: rgba(248, 248, 248, 0);
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a,
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:hover,
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:focus {
+    color: rgba(85, 85, 85, 1);
+    background-color: rgba(231, 231, 231, 1);
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle {
+    border-color: #ddd;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle:hover,
+#custom-bootstrap-menu.navbar-default .navbar-toggle:focus {
+    background-color: #ddd;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle .icon-bar {
+    background-color: #888;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle:hover .icon-bar,
+#custom-bootstrap-menu.navbar-default .navbar-toggle:focus .icon-bar {
+    background-color: #2e2e2e;
+}
+
+        .panel-default>.panel-heading {
+ 
+            background-color: rgba(46, 46, 46, 1);
+            color: #bfcf14;
+        }
+
     </style>
 
     @yield('headscript')
 </head>
 <body id="app-layout">
-    <nav class="navbar navbar-default navbar-static-top">
-        <div class="container">
-            <div class="navbar-header">
 
-                <!-- Collapsed Hamburger -->
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse">
-                    <span class="sr-only">Toggle Navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
+    <div id="custom-bootstrap-menu" class="navbar navbar-default " role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header"><a class="navbar-brand" href="/">ChasingTowers</a>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-menubuilder"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
                 </button>
-
-                <!-- Branding Image -->
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    ChasingTowers Poker
-                </a>
             </div>
-
-            <div class="collapse navbar-collapse" id="app-navbar-collapse">
-                <!-- Left Side Of Navbar -->
-                <ul class="nav navbar-nav">
-                    <li><a href="{{ url('/') }}">Home</a></li>
-                    <li><a href="{{ url('/seasons') }}">Seasons</a></li>
-                    <li><a href="{{ url('/showgames') }}">Recent Games</a></li>
-                    <li><a href="{{ url('/addgame') }}">Add Game</a></li>
+            <div class="collapse navbar-collapse navbar-menubuilder">
+                <ul class="nav navbar-nav navbar-left">
+                    <li><a href="/">Home</a>
+                    </li>
+                    <li><a href="/seasons">Seasons</a>
+                    </li>
+                    <li><a href="/showgames">Recent Games</a>
+                    </li>
+                    <li><a href="/addgame">Add Game</a>
+                    </li>
                 </ul>
-
-                <!-- Right Side Of Navbar -->
+                            <!-- Right Side Of Navbar -->
                 <ul class="nav navbar-nav navbar-right">
                     <!-- Authentication Links -->
                     @if (Auth::guest())
@@ -68,6 +106,7 @@
                             </a>
 
                             <ul class="dropdown-menu" role="menu">
+                                <li><a href="{{ url('/profile') }}"><i class="fa fa-btn fa-user"></i>Profile</a></li>
                                 <li><a href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a></li>
                             </ul>
                         </li>
@@ -75,7 +114,7 @@
                 </ul>
             </div>
         </div>
-    </nav>
+    </div>
 
     @if (count($errors) > 0)
         <div class="alert alert-danger">

@@ -9,6 +9,7 @@ use App\PokerGameFinish;
 use App\PokerGameType;
 use App\PokerSeason;
 use App\User;
+use Auth;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -33,7 +34,32 @@ class HomeController extends Controller
     {
         $blogs = Blog::orderBy('updated_at', 'desc')->get();
         $upcomingGames = PokerGame::where('date','>',date("Y-m-d"))->get();
-        return view('welcome', compact('blogs', 'upcomingGames'));
+        $wins = PokerGameFinish::where('user_id', \Auth::id())->where('place',1)->count();
+        $totalWinnings = 0;
+        $averagePlace = 0;
+        $averagePlaceLast6Months = 0;
+        $gamesLast6Months = 0;
+        $allFinishes = PokerGameFinish::where('user_id', \Auth::id())->get();
+        $sixMonthDate = date("Y-m-d", strtotime("-6 months"));
+        foreach ($allFinishes as $finish) {
+            $totalWinnings = $totalWinnings + $finish->money();
+            $averagePlace = $averagePlace + $finish->place;
+            if($finish->pokerGame->date > $sixMonthDate) {
+                $averagePlaceLast6Months = $averagePlaceLast6Months + $finish->place;
+                $gamesLast6Months++;
+            }
+        }
+        if($gamesLast6Months > 0) {
+            $averagePlaceLast6Months = $averagePlaceLast6Months / $gamesLast6Months;
+        }
+        $averagePlace = $averagePlace / count($allFinishes);
+        $dashboard = array(
+            'wins' => $wins,
+            'totalWinnings' => $totalWinnings,
+            'averagePlace' => $averagePlace,
+            'averagePlaceLast6Months' => $averagePlaceLast6Months,
+        );
+        return view('welcome', compact('blogs', 'upcomingGames', 'dashboard'));
     }
 
     public function submitBlog(Request $request)
@@ -49,8 +75,11 @@ class HomeController extends Controller
         $blog->user_id = \Auth::id();
         $blog->save();
 
-        $blogs = Blog::orderBy('updated_at', 'asc')->all();
-        return view('welcome', compact('blogs'));
+        return redirect('/');
+
+        //$blogs = Blog::orderBy('updated_at', 'desc')->get();
+        //$upcomingGames = PokerGame::where('date','>',date("Y-m-d"))->get();
+        //return view('welcome', compact('blogs', 'upcomingGames'));
     }
 
     public function addgame()
@@ -172,4 +201,35 @@ class HomeController extends Controller
         $games = PokerGame::orderBy('date', 'desc')->get();
         return view('showgames', compact('games'));   
     }
+
+    public function profile()
+    {   
+        $user = Auth::user();
+        return view('profile', compact('user'));   
+    }
+
+    public function updatepassword(Request $request) {
+        $user = Auth::user();
+
+        $validation = $this->validate($request, [
+            // Here's how our new validation rule is used.
+            //'password' => 'hash:' . $user->password,
+            'password' => 'required|min:6|confirmed',
+            'current_password' => 'required',
+        ]);
+
+        //if(bcrypt($request->input('current_password')) != $user->password) {
+        if(!Auth::attempt(['email' => $user->email, 'password' => $request->input('current_password')])) {
+            return redirect('/profile')
+                ->withErrors("Current Password Invalid")
+                ->withInput();
+        }
+
+        $user->password = bcrypt($request->input('password'));
+        $user->save();
+
+        return redirect('/profile')
+            ->withErrors("Password Updated")
+            ->withInput();
+    }    
 }

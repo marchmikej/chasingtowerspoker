@@ -1,28 +1,45 @@
 @extends('layouts.app')
 
+@section('headscript')
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['table']});
+      google.charts.setOnLoadCallback(drawTable);
+
+      function drawTable() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Player');
+        data.addColumn('number', 'Place');
+        data.addColumn('number', 'Points');
+        data.addColumn('number', 'Money');
+        data.addColumn('string', 'Knocked Out By');
+        data.addRows([
+            @foreach($game->finishes as $finish)
+            	@if($finish->knocked_out_by_id > 0)
+	               	['{{$finish->user->name}}', {{$finish->place}}, {{$finish->points()}}, {{$finish->money()}}, '{{$finish->knockedOutBy()->name}}'],
+	            @else
+	            	['{{$finish->user->name}}', {{$finish->place}}, {{$finish->points()}}, {{$finish->money()}}, 'N/A'],
+	            @endif
+            @endforeach
+        ]);
+
+        var table = new google.visualization.Table(document.getElementById('table_div'));
+        table.draw(data, {showRowNumber: true, width: '100%', height: '100%'});
+      }
+    </script>
+@endsection
+
 @section('content')
 <div class="container">
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
         	<div class="panel panel-default">
-          		<div class="panel-heading">Stats</div>
-          			@foreach($game->finishes as $finish)
-          			    <div class="container">
-  							<div class="row">
-  								<div class="col-sm-2">
-								 	Player: {{$finish->user->name}}
-							 	</div>
-  								<div class="col-sm-2">
-								 	Points: {{$finish->points()}}
-							 	</div>
-								<div class="col-sm-2">
-								 	Money: {{$finish->money()}}
-							 	</div>
-						 	</div>
-					 	</div>
-					@endforeach
-		        </div>
-		    </div>
+                <div class="panel-heading">Results for {{$game->date}} at {{$game->location}}</div>
+
+                <div class="panel-body">
+                    <div id="table_div"></div>
+                </div>
+            </div>
 		</div>
 	</div>
 </div>
@@ -31,8 +48,9 @@
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
         	<div class="panel panel-default">
-          		<div class="panel-heading">Results for {{$game->date}} at {{$game->location}}</div>
+          		<div class="panel-heading">Update Standings</div>
 		        <div class="panel-body">
+		        	@if(Auth::user()->editor == 1)
             @foreach($game->finishes as $finish)
             	                <div class="container">
   						<div class="row">
@@ -84,6 +102,7 @@
                     </div>
 	                	</div>
 					    <div class="col-sm-2">
+
             		<button type="submit" class="btn btn-primary">Update</button>
             	</div>
             </form>
@@ -91,6 +110,7 @@
         </div>
         		<hr size=2>
         	@endforeach
+        	@endif
         		</div>
             </div>
         	@if(count($game->finishes) < $game->number_of_players)
